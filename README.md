@@ -1,4 +1,5 @@
 # Plugin Example
+This example plugin is best used when following along with the [Build Your First Plugin](https://jackhenry.dev/open-api-docs/plugins/quickstarts/BuildYourFirstPlugin/).
 
 ## How to Run
 1. Install dependencies `npm install`
