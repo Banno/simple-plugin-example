@@ -1,14 +1,15 @@
 {
-  "name": "plugin-demo",
+  "name": "@banno/simple-plugin-example",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "description": "Example application for builiding your first plugin",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "ejs": "^3.1.5",
     "express": "^4.17.1",
