@@ -3,7 +3,7 @@ const jwt_decode = require('jwt-decode')
 
 const get_tokens = async (base_url, keys, auth_code, redirect_uri) => {
     // Use the token endpoint we will use to exchange the code for a token
-    const token_url = `${base_url}/a/consumer/api/oidc/token`
+    const token_url = `${base_url}/a/consumer/api/v0/oidc/token`
 
     // Send a request to the token endpoint to receive the authenticated payload
     const auth_response = await fetch(token_url, {
