@@ -15,16 +15,12 @@
  */
 
 const express = require('express')
-const cookieParser = require('cookie-parser')
 const app = express()
 const fetch = require('node-fetch')
 const crypto = require('crypto')
 
 const config = require('./config')
 const get_tokens = require('./utils/get_tokens')
-
-// Add cookie support
-app.use(cookieParser())
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -33,6 +29,8 @@ app.set('view engine', 'ejs')
 app.get('/static', (req, res) => {
     res.render('pages/static')
 })
+
+const stateStore = new Map()
 
 // Final plugin, renders dynamic HTML
 app.get('/dynamic', async (req, res) => {
@@ -44,8 +42,7 @@ app.get('/dynamic', async (req, res) => {
     let codeVerifier
     if (!req.query.code || !req.query.state) {
         if (req.query.state) {
-            // Delete the state cookie - it's a single use item
-            res.cookie(`STATE_${state}`, '', {httpOnly: true, expires: new Date(0)})
+            stateStore.delete(req.query.state)
         }
 
         // create the PKCE code verifier and stash it for later
@@ -57,6 +54,7 @@ app.get('/dynamic', async (req, res) => {
             .replace(/\//g, '_')
 
         state = crypto.randomBytes(60).toString('hex').slice(0, 128)
+        stateStore.set(state, codeVerifier)
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
         // redirect
@@ -64,9 +62,8 @@ app.get('/dynamic', async (req, res) => {
         return
     } else {
         state = req.query.state
-        codeVerifier = req.cookies[`STATE_${state}`]
-        // Delete the state cookie - it's a single use item
-        res.cookie(`STATE_${state}`, '', {httpOnly: true, expires: new Date(0)})
+        codeVerifier = stateStore.get(state)
+        stateStore.delete(state)
     }
 
     // Get the authorization code from the URL parameters
