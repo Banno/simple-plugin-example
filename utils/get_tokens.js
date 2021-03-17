@@ -1,7 +1,8 @@
 const fetch = require('node-fetch')
 const jwt_decode = require('jwt-decode')
+const querystring = require('querystring')
 
-const get_tokens = async (base_url, keys, auth_code, redirect_uri) => {
+const get_tokens = async (base_url, clientId, clientSecret, auth_code, redirect_uri, codeVerifier) => {
     // Use the token endpoint we will use to exchange the code for a token
     const token_url = `${base_url}/a/consumer/api/v0/oidc/token`
 
@@ -9,10 +10,9 @@ const get_tokens = async (base_url, keys, auth_code, redirect_uri) => {
     const auth_response = await fetch(token_url, {
         method: 'post',
         headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${keys}`
+            'Content-Type': 'application/x-www-form-urlencoded'
         }, 
-        body: `grant_type=authorization_code&code=${auth_code}&redirect_uri=${redirect_uri}`
+        body: `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${auth_code}&redirect_uri=${redirect_uri}&code_verifier=${codeVerifier}`
     })
 
     // Parse and decode the response to get the appropriate tokens

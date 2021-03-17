@@ -17,6 +17,7 @@
 const express = require('express')
 const app = express()
 const fetch = require('node-fetch')
+const crypto = require('crypto')
 
 const config = require('./config')
 const get_tokens = require('./utils/get_tokens')
@@ -29,20 +30,47 @@ app.get('/static', (req, res) => {
     res.render('pages/static')
 })
 
+const stateStore = new Map()
+
 // Final plugin, renders dynamic HTML
 app.get('/dynamic', async (req, res) => {
-    // Get the authorization code from the URL parameters
-    const auth_code = req.query.code
-
-    const api_keys = `${config.api.client_id}:${config.api.client_secret}`
-    const base64_keys = Buffer.from(api_keys).toString('base64')
-
     // The REDIRECT_URI must be added to the institution settings in Banno People
     // *NOTE* it is case sensitive
     const REDIRECT_URI = `http://localhost:${config.app_port}/dynamic`
 
+    let state
+    let codeVerifier
+    if (!req.query.code || !req.query.state) {
+        if (req.query.state) {
+            stateStore.delete(req.query.state)
+        }
+
+        // create the PKCE code verifier and stash it for later
+        codeVerifier = crypto.randomBytes(60).toString('hex').slice(0, 128)
+        const CODE_CHALLENGE = crypto.createHash('sha256')
+            .update(Buffer.from(codeVerifier)).digest('base64')
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+
+        state = crypto.randomBytes(60).toString('hex').slice(0, 128)
+        stateStore.set(state, codeVerifier)
+        res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
+
+        // redirect
+        res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=openid&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
+        return
+    } else {
+        state = req.query.state
+        codeVerifier = stateStore.get(state)
+        stateStore.delete(state)
+    }
+
+    // Get the authorization code from the URL parameters
+    const auth_code = req.query.code
+
     // Use the get_tokens helper function to receive the authenticated payload
-    const my_tokens = await get_tokens(config.api.environment, base64_keys, auth_code, REDIRECT_URI)
+    const my_tokens = await get_tokens(config.api.environment, config.api.client_id, config.api.client_secret, auth_code, REDIRECT_URI, codeVerifier)
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
 
