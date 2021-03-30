@@ -58,7 +58,7 @@ app.get('/dynamic', async (req, res) => {
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
         // redirect
-        res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=${encodeURIComponent('openid https://api.banno.com/consumer/auth/accounts.readonly')}&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
+        res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
         return
     } else {
         state = req.query.state
@@ -87,7 +87,7 @@ app.get('/dynamic', async (req, res) => {
     const accounts_data = JSON.parse(user_accounts_string)
     
     res.render('pages/dynamic', {
-        account_name: id_token.given_name, 
+        given_name: id_token.given_name, 
         accounts_count: accounts_data.accounts.length
     })
 })
