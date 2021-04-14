@@ -80,7 +80,7 @@ app.get('/dynamic', async (req, res) => {
     const auth_code = req.query.code
 
     // Here we pass along the Code Verifier to the authorization server as part of the
-    // flow to exchange an Authorization Code for the Access Token and Identity Token.
+    // flow to exchange an Authorization Code for an Access Token and Identity Token.
     //
     // As part of PKCE, the Code Verifier is what the authorization server uses to verify
     // that the application requesting to exchange an Authorization Code for an Access Token and Identity Token
