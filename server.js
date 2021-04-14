@@ -95,6 +95,7 @@ app.get('/dynamic', async (req, res) => {
     // See more details at https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/
     const user_id = id_token.sub
 
+    // We can use the Access Token to gain authorized access to the user's resources.
     const user_accounts_endpoint = `${config.api.environment}/a/consumer/api/v0/users/${user_id}/accounts`
     const user_accounts_info = await fetch(user_accounts_endpoint, {
         method: 'get',
