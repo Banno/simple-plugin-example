@@ -77,7 +77,7 @@ app.get('/dynamic', async (req, res) => {
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
 
-    // We can access some user information from the decoded token
+    // We can access some user information from the decoded Identity Token
     const user_id = id_token.sub
 
     const user_accounts_endpoint = `${config.api.environment}/a/consumer/api/v0/users/${user_id}/accounts`
