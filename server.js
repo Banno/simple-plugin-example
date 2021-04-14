@@ -49,7 +49,9 @@ app.get('/dynamic', async (req, res) => {
             stateStore.delete(req.query.state)
         }
 
-        // create the PKCE code verifier and stash it for later
+        // PKCE (Proof Key for Code Exchange) is an OAuth extension that adds additional security to the Authorization Code flow.
+        // Here we create both the Code Verifier and Code Challenge.
+        // See more details at https://tools.ietf.org/html/rfc7636
         codeVerifier = crypto.randomBytes(60).toString('hex').slice(0, 128)
         const CODE_CHALLENGE = crypto.createHash('sha256')
             .update(Buffer.from(codeVerifier)).digest('base64')
@@ -57,11 +59,13 @@ app.get('/dynamic', async (req, res) => {
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
 
+        // We save the Code Verifier for later use in the authorization flow.
         state = crypto.randomBytes(60).toString('hex').slice(0, 128)
         stateStore.set(state, codeVerifier)
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
-        // redirect
+        // Redirect to begin the authorization flow.
+        // Here we pass along the Code Challenge to the authorization server.
         res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
         return
     } else {
@@ -73,7 +77,12 @@ app.get('/dynamic', async (req, res) => {
     // Get the Authorization Code from the URL parameters
     const auth_code = req.query.code
 
-    // Use the get_tokens helper function to receive the authenticated payload
+    // Here we pass along the Code Verifier to the authorization server as part of the
+    // flow to exchange an Authorization Code for the Access Token and Identity Token.
+    //
+    // As part of PKCE, the Code Verifier is what the authorization server uses to verify
+    // that the application requesting to exchange an Authorization Code for an Access Token and Identity Token
+    // is the same application which began the authorization flow.
     const my_tokens = await get_tokens(config.api.environment, config.api.client_id, config.api.client_secret, auth_code, REDIRECT_URI, codeVerifier)
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
