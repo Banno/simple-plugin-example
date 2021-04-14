@@ -45,6 +45,7 @@ app.get('/dynamic', async (req, res) => {
     let state
     let codeVerifier
     if (!req.query.code || !req.query.state) {
+        // If we are in this state, then we are starting a new authorization flow.
         if (req.query.state) {
             stateStore.delete(req.query.state)
         }
@@ -69,6 +70,7 @@ app.get('/dynamic', async (req, res) => {
         res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
         return
     } else {
+        // Retrieve the Code Verifier from the stored state.
         state = req.query.state
         codeVerifier = stateStore.get(state)
         stateStore.delete(state)
