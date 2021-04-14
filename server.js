@@ -77,7 +77,10 @@ app.get('/dynamic', async (req, res) => {
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
 
-    // We can access some user information from the decoded Identity Token
+    // We can access some user information from the decoded Identity Token.
+    // The "sub" OpenID Connect claim is the unique subject identifier for the user.
+    // This value can be used where API calls use the placeholder {userId} in API path definitions.
+    // See more details at https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/
     const user_id = id_token.sub
 
     const user_accounts_endpoint = `${config.api.environment}/a/consumer/api/v0/users/${user_id}/accounts`
