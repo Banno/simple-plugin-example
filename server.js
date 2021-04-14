@@ -69,7 +69,7 @@ app.get('/dynamic', async (req, res) => {
         stateStore.delete(state)
     }
 
-    // Get the authorization code from the URL parameters
+    // Get the Authorization Code from the URL parameters
     const auth_code = req.query.code
 
     // Use the get_tokens helper function to receive the authenticated payload
