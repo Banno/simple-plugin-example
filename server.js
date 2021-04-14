@@ -65,9 +65,28 @@ app.get('/dynamic', async (req, res) => {
         stateStore.set(state, codeVerifier)
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
+        // Build up the authorization URL piece by piece, starting with the authorization endpoint.
+        const authBaseURL = `${config.api.environment}/a/consumer/api/v0/oidc/auth`
+
+        // See more about scopes (and claims) at https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/
+        const scopesParameterEncoded = `?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}`
+
+        const responseTypeParameter = `&response_type=code`
+       
+        const clientIdParameter = `&client_id=${config.api.client_id}`
+       
+        const redirectUriParameterEncoded = `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+       
+        const stateParameter = `&state=${state}`
+
+        // Here we pass along the Code Challenge and method to the authorization server.
+        const codeChallengeParameter = `&code_challenge=${CODE_CHALLENGE}`
+        const codeChallengeMethodParameter = `&code_challenge_method=S256`
+
+        let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}`
+
         // Redirect to begin the authorization flow.
-        // Here we pass along the Code Challenge to the authorization server.
-        res.redirect(`${config.api.environment}/a/consumer/api/v0/oidc/auth?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}&response_type=code&client_id=${config.api.client_id}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`)
+        res.redirect(authorizationURL)
         return
     } else {
         // Retrieve the Code Verifier from the stored state.
