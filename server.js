@@ -30,6 +30,9 @@ app.get('/static', (req, res) => {
     res.render('pages/static')
 })
 
+// This example project doesn't include any storage mechanism (e.g. a database) for managing state.
+// Therefore, we use this as our 'storage' for the purposes of this example.
+// This method is NOT recommended for use in production systems.
 const stateStore = new Map()
 
 // Final plugin, renders dynamic HTML
