@@ -25,7 +25,7 @@ const get_tokens = require('./utils/get_tokens')
 // set the view engine to ejs
 app.set('view engine', 'ejs')
 
-// Test plugin, renders static HTML
+// First plugin, renders static HTML
 app.get('/static', (req, res) => {
     res.render('pages/static')
 })
