@@ -76,7 +76,7 @@ app.get('/dynamic', async (req, res) => {
         stateStore.delete(state)
     }
 
-    // Get the Authorization Code from the URL parameters
+    // Get the Authorization Code from the redirect URL parameters
     const auth_code = req.query.code
 
     // Here we pass along the Code Verifier to the authorization server as part of the
