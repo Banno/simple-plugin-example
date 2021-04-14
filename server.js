@@ -37,8 +37,9 @@ const stateStore = new Map()
 
 // Final plugin, renders dynamic HTML
 app.get('/dynamic', async (req, res) => {
-    // The REDIRECT_URI must be added to the institution settings in Banno People
+    // The REDIRECT_URI must be added to the institution settings in Banno People.
     // *NOTE* it is case sensitive
+    // See more details at https://jackhenry.dev/open-api-docs/plugins/architecture/ExternalApplications/
     const REDIRECT_URI = `http://localhost:${config.app_port}/dynamic`
 
     let state
