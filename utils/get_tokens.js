@@ -3,7 +3,7 @@ const jwt_decode = require('jwt-decode')
 const querystring = require('querystring')
 
 const get_tokens = async (base_url, clientId, clientSecret, auth_code, redirect_uri, codeVerifier) => {
-    // Use the token endpoint we will use to exchange the code for a token
+    // This is the token endpoint we will use to exchange the Authorization Code for an Access Token and Identity Token.
     const token_url = `${base_url}/a/consumer/api/v0/oidc/token`
 
     // Send a request to the token endpoint to receive the authenticated payload
@@ -15,9 +15,9 @@ const get_tokens = async (base_url, clientId, clientSecret, auth_code, redirect_
         body: `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${auth_code}&redirect_uri=${redirect_uri}&code_verifier=${codeVerifier}`
     })
 
-    // Parse and decode the response to get the appropriate tokens
-    // First we want the access token which is needed to make authenticated API calls
-    // Second we want the identity token so we can have more context about the user
+    // Parse and decode the response to get an Access Token and Identity Token.
+    // First we want the Access Token which is needed to make authenticated API calls.
+    // Second we want the Identity Token so we can have more context about the user.
     const token_response = await auth_response.text()
     const access_token = JSON.parse(token_response).access_token
     const id_token = JSON.parse(token_response).id_token
