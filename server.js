@@ -21,7 +21,7 @@ const crypto = require('crypto')
 
 const config = require('./config')
 const get_tokens = require('./utils/get_tokens')
-const { createCodeVerifier } = require('./utils/pkce')
+const { createCodeVerifier, createCodeChallenge } = require('./utils/pkce')
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -55,11 +55,7 @@ app.get('/dynamic', async (req, res) => {
         // Here we create both the Code Verifier and Code Challenge.
         // See more details at https://tools.ietf.org/html/rfc7636
         codeVerifier = createCodeVerifier(codeVerifier)
-        const CODE_CHALLENGE = crypto.createHash('sha256')
-            .update(Buffer.from(codeVerifier)).digest('base64')
-            .replace(/=/g, '')
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
+        const CODE_CHALLENGE = createCodeChallenge(codeVerifier)
 
         // We save the Code Verifier for later use in the authorization flow.
         state = crypto.randomBytes(60).toString('hex').slice(0, 128)
