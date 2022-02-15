@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+// This example plugin is best used when following along with the "Build Your First Plugin" quickstart,
+// see more details https://jackhenry.dev/open-api-docs/plugins/quickstarts/BuildYourFirstPlugin/
+//
+// To learn more about extending Banno's user interface and how to get started with the Plugin Framework,
+// see more details at https://jackhenry.dev/open-api-docs/plugins/getting-started/
+
 const express = require('express')
 const app = express()
 const fetch = require('node-fetch')
