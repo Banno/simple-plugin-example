@@ -17,11 +17,11 @@
 const express = require('express')
 const app = express()
 const fetch = require('node-fetch')
-const crypto = require('crypto')
 
 const config = require('./config')
 const get_tokens = require('./utils/get_tokens')
 const { createCodeVerifier, createCodeChallenge } = require('./utils/pkce')
+const { createState } = require("./utils/state")
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -58,7 +58,7 @@ app.get('/dynamic', async (req, res) => {
         const CODE_CHALLENGE = createCodeChallenge(codeVerifier)
 
         // We save the Code Verifier for later use in the authorization flow.
-        state = crypto.randomBytes(60).toString('hex').slice(0, 128)
+        state = createState()
         stateStore.set(state, codeVerifier)
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
