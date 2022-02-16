@@ -51,6 +51,7 @@ app.get('/dynamic', async (req, res) => {
 
     let state
     let codeVerifier
+    let codeChallenge
     if (!req.query.code || !req.query.state) {
         // If we are in this state, then we are starting a new authorization flow.
         if (req.query.state) {
@@ -61,7 +62,7 @@ app.get('/dynamic', async (req, res) => {
         // Here we create both the Code Verifier and Code Challenge.
         // See more details at https://tools.ietf.org/html/rfc7636
         codeVerifier = createCodeVerifier(codeVerifier)
-        const CODE_CHALLENGE = createCodeChallenge(codeVerifier)
+        codeChallenge = createCodeChallenge(codeVerifier)
 
         // We save the Code Verifier for later use in the authorization flow.
         state = createState()
@@ -83,7 +84,7 @@ app.get('/dynamic', async (req, res) => {
         const stateParameter = `&state=${state}`
 
         // Here we pass along the Code Challenge and method to the authorization server.
-        const codeChallengeParameter = `&code_challenge=${CODE_CHALLENGE}`
+        const codeChallengeParameter = `&code_challenge=${codeChallenge}`
         const codeChallengeMethodParameter = `&code_challenge_method=S256`
 
         let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}`
