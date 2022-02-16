@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
+// This example plugin is best used when following along with the "Build Your First Plugin" quickstart,
+// see more details https://jackhenry.dev/open-api-docs/plugins/quickstarts/BuildYourFirstPlugin/
+//
+// To learn more about extending Banno's user interface and how to get started with the Plugin Framework,
+// see more details at https://jackhenry.dev/open-api-docs/plugins/getting-started/
+
 const express = require('express')
 const app = express()
 const fetch = require('node-fetch')
-const crypto = require('crypto')
 
 const config = require('./config')
 const get_tokens = require('./utils/get_tokens')
+const { createCodeVerifier, createCodeChallenge } = require('./utils/pkce')
+const { createState } = require("./utils/state")
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -44,6 +51,7 @@ app.get('/dynamic', async (req, res) => {
 
     let state
     let codeVerifier
+    let codeChallenge
     if (!req.query.code || !req.query.state) {
         // If we are in this state, then we are starting a new authorization flow.
         if (req.query.state) {
@@ -53,15 +61,11 @@ app.get('/dynamic', async (req, res) => {
         // PKCE (Proof Key for Code Exchange) is an OAuth extension that adds additional security to the Authorization Code flow.
         // Here we create both the Code Verifier and Code Challenge.
         // See more details at https://tools.ietf.org/html/rfc7636
-        codeVerifier = crypto.randomBytes(60).toString('hex').slice(0, 128)
-        const CODE_CHALLENGE = crypto.createHash('sha256')
-            .update(Buffer.from(codeVerifier)).digest('base64')
-            .replace(/=/g, '')
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
+        codeVerifier = createCodeVerifier(codeVerifier)
+        codeChallenge = createCodeChallenge(codeVerifier)
 
         // We save the Code Verifier for later use in the authorization flow.
-        state = crypto.randomBytes(60).toString('hex').slice(0, 128)
+        state = createState()
         stateStore.set(state, codeVerifier)
         res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
 
@@ -80,7 +84,7 @@ app.get('/dynamic', async (req, res) => {
         const stateParameter = `&state=${state}`
 
         // Here we pass along the Code Challenge and method to the authorization server.
-        const codeChallengeParameter = `&code_challenge=${CODE_CHALLENGE}`
+        const codeChallengeParameter = `&code_challenge=${codeChallenge}`
         const codeChallengeMethodParameter = `&code_challenge_method=S256`
 
         let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}`
