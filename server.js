@@ -82,12 +82,34 @@ app.get('/dynamic', async (req, res) => {
         const redirectUriParameterEncoded = `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
        
         const stateParameter = `&state=${state}`
+        
+        // Adapted from https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
+        //
+        // Here we request a Publicly Available Claim.
+        //
+        // If we had instead requested a Restricted Claim, the administrator at the financial institution
+        // would also need to enable that restricted claim for the External Application used by this example
+        // in order to actually receive data for that claim.
+        const claims = {
+            'https://api.banno.com/consumer/claim/institution_id': null,
+        };
+
+        const claimsToRequest = {
+            id_token: claims,
+            userinfo: claims,
+        };
+
+        const claimsParameterValue = encodeURIComponent(
+            JSON.stringify(claimsToRequest)
+        );
+
+        const claimsParameter = `&claims=${claimsParameterValue}`
 
         // Here we pass along the Code Challenge and method to the authorization server.
         const codeChallengeParameter = `&code_challenge=${codeChallenge}`
         const codeChallengeMethodParameter = `&code_challenge_method=S256`
 
-        let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}`
+        let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}${claimsParameter}`
 
         // Redirect to begin the authorization flow.
         res.redirect(authorizationURL)
@@ -111,6 +133,15 @@ app.get('/dynamic', async (req, res) => {
     const my_tokens = await get_tokens(config.api.environment, config.api.client_id, config.api.client_secret, auth_code, REDIRECT_URI, codeVerifier)
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
+
+    // Here we log the Publicly Available Claim that we requested.
+    //
+    // If we had instead requested a Restricted Claim, the administrator at the financial institution
+    // would also need to enable that restricted claim for the External Application used by this example
+    // in order to actually receive data for that claim.
+    //
+    // See https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
+    console.log(`Unique identifier for the institution: ${id_token['https://api.banno.com/consumer/claim/institution_id']}`)
 
     // We can access some user information from the decoded Identity Token.
     // The "sub" OpenID Connect claim is the unique subject identifier for the user.
