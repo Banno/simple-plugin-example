@@ -3,15 +3,28 @@
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Plugin Framework QA</title>
+    <title>Simple Plugin Example</title>
     <style>
         body {
-        background-color: lightblue;
-        display: flex;
-        height: 100vh;
-        width: 100vw;
-        align-items: center;
-        justify-content: center;;
+            background-color: lightblue;
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /*
+         * This example changes the background color for dark mode.
+         *
+         * See more resources on dark mode and color schemes: https://jackhenry.dev/open-api-docs/plugins/architecture/userinterface/#dark-mode-and-color-schemes
+         *
+         * See more info on theming: https://jackhenry.dev/open-api-docs/plugins/guides/designinganddevelopingplugins/#theming
+         */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: darkgreen;
+            }
         }
     </style>
     </head>
