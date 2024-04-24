@@ -29,10 +29,10 @@
             color: <%= fg_light %>;
             font-family: 'Roboto';
             font-size: 16px;
-            line-height: 22px;
             height: 100vh;
-            width: 100vw;
+            line-height: 22px;
             padding: 0 20px;
+            width: 100vw;
         }
 
         h1,
@@ -49,12 +49,13 @@
             border: none;
             border-radius: 24px;
             color: <%= btn_fg_light %>;
-            padding: 12px 20px;
+            font-family: 'Roboto';
+            padding: 12px 30px;
         }
 
         .card-face-container {
-            width: 100%;
             max-width: 300px;
+            width: 100%;
         }
 
         .card-face-info {
@@ -76,6 +77,13 @@
             font-size: 13px;
             margin-top: 12px;
             max-width: 500px;
+        }
+
+        .main-image {
+            border-radius: 20px;
+            margin: 7px 0;
+            max-width: calc(100% - 20px);
+            width: 500px;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -135,9 +143,9 @@
         </div>
 
         <div class="expanded-view">
-            <h1>My Monthly Savings</h1>
+            <h1>My Monthly Savings Program</h1>
             <div class="expanded-info">
-                <img src="/public/images/image.jpg" style="width:500px;max-width:calc(100% - 20px);border-radius:20px">
+                <img src="/public/images/image.jpg" class="main-image">
                 <p>
                     Learn how you can <strong>set aside money for your future goals</strong>, whether you're saving for education,
                     a new addition to your home, or that special vacation you've been wanting to go on!
@@ -154,7 +162,7 @@
                     And you get <strong>monthly reports</strong> showing your savings activity, with helpful guidance on how to
                     get the most out of your savings.
                 </p>
-                <button class="cta-btn">Sign up today</button>
+                <button class="cta-btn">Sign up today!</button>
             </div>
         </div>
 
