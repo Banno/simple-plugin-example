@@ -32,9 +32,30 @@ const { createState } = require("./utils/state")
 // set the view engine to ejs
 app.set('view engine', 'ejs')
 
+app.use('/public/', express.static('./public'));
+
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
-    res.render('pages/static')
+    const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
+    fetch(theme_endpoint, { method: 'get' })
+        .then(res => res.json())
+        .then(json => {
+            res.render('pages/static', {
+                bg_light: json.default.light['primaryContentBackgroundColor'],
+                fg_light: json.default.light['bodyTextPrimaryColor'],
+                theme_light: json.default.light['bodyTextThemeColor'],
+                btn_bg_light: json.default.light['primaryButtonColor'],
+                btn_fg_light: json.default.light['primaryButtonTextColor'],
+                bg_dark: json.default.dark['primaryContentBackgroundColor'],
+                fg_dark: json.default.dark['bodyTextPrimaryColor'],
+                theme_dark: json.default.dark['bodyTextThemeColor'],
+                btn_bg_dark: json.default.dark['primaryButtonColor'],
+                btn_fg_dark: json.default.dark['primaryButtonTextColor']
+            })
+        })
+        .catch((err) => {
+            console.log("Unable to fetch theme data - ", err)
+        })
 })
 
 // This example project doesn't include any storage mechanism (e.g. a database) for managing state.
@@ -159,10 +180,29 @@ app.get('/dynamic', async (req, res) => {
     const user_accounts_string = await user_accounts_info.text()
     const accounts_data = JSON.parse(user_accounts_string)
     
-    res.render('pages/dynamic', {
-        given_name: id_token.given_name, 
-        accounts_count: accounts_data.accounts.length
-    })
+    const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
+    fetch(theme_endpoint, { method: 'get' })
+        .then(res => res.json())
+        .then(json => {
+            res.render('pages/dynamic', {
+                given_name: id_token.given_name, 
+                accounts_count: accounts_data.accounts.length,
+                bg_light: json.default.light['primaryContentBackgroundColor'],
+                fg_light: json.default.light['bodyTextPrimaryColor'],
+                theme_light: json.default.light['bodyTextThemeColor'],
+                btn_bg_light: json.default.light['primaryButtonColor'],
+                btn_fg_light: json.default.light['primaryButtonTextColor'],
+                bg_dark: json.default.dark['primaryContentBackgroundColor'],
+                fg_dark: json.default.dark['bodyTextPrimaryColor'],
+                theme_dark: json.default.dark['bodyTextThemeColor'],
+                btn_bg_dark: json.default.dark['primaryButtonColor'],
+                btn_fg_dark: json.default.dark['primaryButtonTextColor']
+            })
+        })
+        .catch((err) => {
+            console.log("Unable to fetch theme data - ", err)
+        })
+
 })
 
 app.listen(config.app_port, () => {
