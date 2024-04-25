@@ -34,28 +34,32 @@ app.set('view engine', 'ejs')
 
 app.use('/public/', express.static('./public'));
 
+// Load theme data
+let themeData;
+const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
+fetch(theme_endpoint, { method: 'get' })
+    .then(res => res.json())
+    .then(json => {
+        themeData = json;
+    })
+    .catch((err) => {
+        console.log("Unable to fetch theme data - ", err)
+    })
+
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
-    const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
-    fetch(theme_endpoint, { method: 'get' })
-        .then(res => res.json())
-        .then(json => {
-            res.render('pages/static', {
-                bg_light: json.default.light['primaryContentBackgroundColor'],
-                fg_light: json.default.light['bodyTextPrimaryColor'],
-                theme_light: json.default.light['bodyTextThemeColor'],
-                btn_bg_light: json.default.light['primaryButtonColor'],
-                btn_fg_light: json.default.light['primaryButtonTextColor'],
-                bg_dark: json.default.dark['primaryContentBackgroundColor'],
-                fg_dark: json.default.dark['bodyTextPrimaryColor'],
-                theme_dark: json.default.dark['bodyTextThemeColor'],
-                btn_bg_dark: json.default.dark['primaryButtonColor'],
-                btn_fg_dark: json.default.dark['primaryButtonTextColor']
-            })
-        })
-        .catch((err) => {
-            console.log("Unable to fetch theme data - ", err)
-        })
+    res.render('pages/static', {
+        bg_light: themeData.default.light['primaryContentBackgroundColor'],
+        fg_light: themeData.default.light['bodyTextPrimaryColor'],
+        theme_light: themeData.default.light['bodyTextThemeColor'],
+        btn_bg_light: themeData.default.light['primaryButtonColor'],
+        btn_fg_light: themeData.default.light['primaryButtonTextColor'],
+        bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
+        fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
+        theme_dark: themeData.default.dark['bodyTextThemeColor'],
+        btn_bg_dark: themeData.default.dark['primaryButtonColor'],
+        btn_fg_dark: themeData.default.dark['primaryButtonTextColor']
+    })
 })
 
 // This example project doesn't include any storage mechanism (e.g. a database) for managing state.
@@ -88,7 +92,7 @@ app.get('/dynamic', async (req, res) => {
         // We save the Code Verifier for later use in the authorization flow.
         state = createState()
         stateStore.set(state, codeVerifier)
-        res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
+        res.cookie(`STATE_${state}`, codeVerifier, { httpOnly: true, sameSite: 'lax' })
 
         // Build up the authorization URL piece by piece, starting with the authorization endpoint.
         const authBaseURL = `${config.api.environment}/a/consumer/api/v0/oidc/auth`
@@ -97,13 +101,13 @@ app.get('/dynamic', async (req, res) => {
         const scopesParameterEncoded = `?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}`
 
         const responseTypeParameter = `&response_type=code`
-       
+
         const clientIdParameter = `&client_id=${config.api.client_id}`
-       
+
         const redirectUriParameterEncoded = `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
-       
+
         const stateParameter = `&state=${state}`
-        
+
         // Adapted from https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
         //
         // Here we request a Publicly Available Claim.
@@ -179,30 +183,21 @@ app.get('/dynamic', async (req, res) => {
 
     const user_accounts_string = await user_accounts_info.text()
     const accounts_data = JSON.parse(user_accounts_string)
-    
-    const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
-    fetch(theme_endpoint, { method: 'get' })
-        .then(res => res.json())
-        .then(json => {
-            res.render('pages/dynamic', {
-                given_name: id_token.given_name, 
-                accounts_count: accounts_data.accounts.length,
-                bg_light: json.default.light['primaryContentBackgroundColor'],
-                fg_light: json.default.light['bodyTextPrimaryColor'],
-                theme_light: json.default.light['bodyTextThemeColor'],
-                btn_bg_light: json.default.light['primaryButtonColor'],
-                btn_fg_light: json.default.light['primaryButtonTextColor'],
-                bg_dark: json.default.dark['primaryContentBackgroundColor'],
-                fg_dark: json.default.dark['bodyTextPrimaryColor'],
-                theme_dark: json.default.dark['bodyTextThemeColor'],
-                btn_bg_dark: json.default.dark['primaryButtonColor'],
-                btn_fg_dark: json.default.dark['primaryButtonTextColor']
-            })
-        })
-        .catch((err) => {
-            console.log("Unable to fetch theme data - ", err)
-        })
 
+    res.render('pages/dynamic', {
+        given_name: id_token.given_name,
+        accounts_count: accounts_data.accounts.length,
+        bg_light: themeData.default.light['primaryContentBackgroundColor'],
+        fg_light: themeData.default.light['bodyTextPrimaryColor'],
+        theme_light: themeData.default.light['bodyTextThemeColor'],
+        btn_bg_light: themeData.default.light['primaryButtonColor'],
+        btn_fg_light: themeData.default.light['primaryButtonTextColor'],
+        bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
+        fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
+        theme_dark: themeData.default.dark['bodyTextThemeColor'],
+        btn_bg_dark: themeData.default.dark['primaryButtonColor'],
+        btn_fg_dark: themeData.default.dark['primaryButtonTextColor']
+    })
 })
 
 app.listen(config.app_port, () => {
