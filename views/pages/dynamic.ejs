@@ -6,32 +6,119 @@
     <title>Dynamic Plugin Sample</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto';
-            font-size: 16px;
-            line-height: 22px;
-            height: 100vh;
-            width: 100vw;
-            padding: 0 20px;
+        .card-face-view {
+            display: block;
         }
 
-        /*
-         * This example changes the background color for dark mode.
-         *
-         * See more resources on dark mode and color schemes: https://jackhenry.dev/open-api-docs/plugins/architecture/userinterface/#dark-mode-and-color-schemes
-         *
-         * See more info on theming: https://jackhenry.dev/open-api-docs/plugins/guides/designinganddevelopingplugins/#theming
-         */
+        .expanded-view {
+            display: none;
+        }
+
+        @media (min-height: 400px) {
+            .card-face-view {
+                display: none;
+            }
+
+            .expanded-view {
+                display: block;
+            }
+        }
+
+        body {
+            background-color: <%= bg_light %>;
+            color: <%= fg_light %>;
+            font-family: 'Roboto';
+            font-size: 16px;
+            height: 100vh;
+            line-height: 22px;
+            padding: 0 20px;
+            width: 100vw;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: <%= theme_light %>;
+        }
+
+        .cta-btn {
+            background-color: <%= btn_bg_light %>;
+            border: none;
+            border-radius: 24px;
+            color: <%= btn_fg_light %>;
+            font-family: 'Roboto';
+            padding: 12px 30px;
+        }
+
+        .card-face-container {
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .card-face-info {
+            align-items: center;
+            display: flex;
+            font-size: 13px;
+            margin-top: -12px;
+        }
+
+        .card-face-info svg {
+            fill: <%= theme_light %>;
+            margin-left: 16px;
+            margin-right: 10px;
+            width: 24px;
+        }
+
+        .expanded-info {
+            align-items: center;
+            font-size: 13px;
+            margin-top: 12px;
+            max-width: 500px;
+        }
+
+        .main-image {
+            border-radius: 20px;
+            margin: 7px 0;
+            max-width: calc(100% - 20px);
+            width: 500px;
+        }
+
         @media (prefers-color-scheme: dark) {
             body {
-                background-color: darkgreen;
+                background-color: <%= bg_dark %>;
+                color: <%= fg_dark %>;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: <%= theme_dark %>;
+            }
+
+            .cta-btn {
+                background-color: <%= btn_bg_dark %>;
+                color: <%= btn_fg_dark %>;
+            }
+
+            .card-face-info svg {
+                fill: <%= theme_dark %>;
             }
         }
     </style>
     </head>
     <body>
-    <div> 
-        <p>Hi <%= given_name %>, you have <b><%= accounts_count %></b> accounts</p>
-    </div>
+        <div class="card-face-view">
+            <p>Hi <%= given_name %>, you have <b><%= accounts_count %></b> accounts</p>
+        </div>
+
+        <div class="expanded-view">
+            This is the expanded view.
+        </div>
     </body>
 </html>
