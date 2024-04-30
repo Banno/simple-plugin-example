@@ -52,13 +52,9 @@ app.get('/static', (req, res) => {
         bg_light: themeData.default.light['primaryContentBackgroundColor'],
         fg_light: themeData.default.light['bodyTextPrimaryColor'],
         theme_light: themeData.default.light['bodyTextThemeColor'],
-        btn_bg_light: themeData.default.light['primaryButtonColor'],
-        btn_fg_light: themeData.default.light['primaryButtonTextColor'],
         bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
         fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
-        theme_dark: themeData.default.dark['bodyTextThemeColor'],
-        btn_bg_dark: themeData.default.dark['primaryButtonColor'],
-        btn_fg_dark: themeData.default.dark['primaryButtonTextColor']
+        theme_dark: themeData.default.dark['bodyTextThemeColor']
     })
 })
 
@@ -190,13 +186,9 @@ app.get('/dynamic', async (req, res) => {
         bg_light: themeData.default.light['primaryContentBackgroundColor'],
         fg_light: themeData.default.light['bodyTextPrimaryColor'],
         theme_light: themeData.default.light['bodyTextThemeColor'],
-        btn_bg_light: themeData.default.light['primaryButtonColor'],
-        btn_fg_light: themeData.default.light['primaryButtonTextColor'],
         bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
         fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
-        theme_dark: themeData.default.dark['bodyTextThemeColor'],
-        btn_bg_dark: themeData.default.dark['primaryButtonColor'],
-        btn_fg_dark: themeData.default.dark['primaryButtonTextColor']
+        theme_dark: themeData.default.dark['bodyTextThemeColor']
     })
 })
 
