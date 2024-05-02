@@ -1,102 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dynamic Plugin Sample</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .card-face-view {
-            display: block;
-        }
-
-        .expanded-view {
-            display: none;
-        }
-
-        @media (min-height: 400px) {
-            .card-face-view {
-                display: none;
-            }
-
-            .expanded-view {
-                display: block;
-            }
-        }
-
-        body {
-            background-color: <%= bg_light %>;
-            color: <%= fg_light %>;
-            font-family: 'Roboto';
-            font-size: 16px;
-            height: 100vh;
-            line-height: 25px;
-            padding: 0 20px;
-            width: 100vw;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            color: <%= theme_light %>;
-        }
-
-        .card-face-container {
-            max-width: 300px;
-            width: 100%;
-        }
-
-        .card-face-info {
-            align-items: center;
-            display: flex;
-            font-size: 13px;
-            margin-top: -12px;
-        }
-
-        .card-face-info svg {
-            fill: <%= theme_light %>;
-            margin-left: 16px;
-            margin-right: 10px;
-            width: 24px;
-        }
-
-        .expanded-info {
-            align-items: center;
-            font-size: 13px;
-            margin-top: 12px;
-            max-width: 500px;
-        }
-
-        .main-image {
-            border-radius: 20px;
-            margin: 7px 0;
-            max-width: calc(100% - 20px);
-            width: 500px;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: <%= bg_dark %>;
-                color: <%= fg_dark %>;
-            }
-
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                color: <%= theme_dark %>;
-            }
-
-            .card-face-info svg {
-                fill: <%= theme_dark %>;
-            }
-        }
-    </style>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Dynamic Plugin Sample</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/public/css/styles.css">
     </head>
     <body>
         <div class="card-face-view">

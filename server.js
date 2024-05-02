@@ -34,28 +34,9 @@ app.set('view engine', 'ejs')
 
 app.use('/public/', express.static('./public'));
 
-// Load theme data
-let themeData;
-const theme_endpoint = `${config.api.environment}/a/consumer/api/v0/institutions/${config.api.institutionId}/themes`
-fetch(theme_endpoint, { method: 'get' })
-    .then(res => res.json())
-    .then(json => {
-        themeData = json;
-    })
-    .catch((err) => {
-        console.log("Unable to fetch theme data - ", err)
-    })
-
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
-    res.render('pages/static', {
-        bg_light: themeData.default.light['primaryContentBackgroundColor'],
-        fg_light: themeData.default.light['bodyTextPrimaryColor'],
-        theme_light: themeData.default.light['bodyTextThemeColor'],
-        bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
-        fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
-        theme_dark: themeData.default.dark['bodyTextThemeColor']
-    })
+    res.render('pages/static')
 })
 
 // This example project doesn't include any storage mechanism (e.g. a database) for managing state.
@@ -182,13 +163,7 @@ app.get('/dynamic', async (req, res) => {
 
     res.render('pages/dynamic', {
         given_name: id_token.given_name,
-        accounts_count: accounts_data.accounts.length,
-        bg_light: themeData.default.light['primaryContentBackgroundColor'],
-        fg_light: themeData.default.light['bodyTextPrimaryColor'],
-        theme_light: themeData.default.light['bodyTextThemeColor'],
-        bg_dark: themeData.default.dark['primaryContentBackgroundColor'],
-        fg_dark: themeData.default.dark['bodyTextPrimaryColor'],
-        theme_dark: themeData.default.dark['bodyTextThemeColor']
+        accounts_count: accounts_data.accounts.length
     })
 })
 
