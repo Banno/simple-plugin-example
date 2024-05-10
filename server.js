@@ -32,6 +32,8 @@ const { createState } = require("./utils/state")
 // set the view engine to ejs
 app.set('view engine', 'ejs')
 
+app.use('/public/', express.static('./public'));
+
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
     res.render('pages/static')
@@ -67,7 +69,7 @@ app.get('/dynamic', async (req, res) => {
         // We save the Code Verifier for later use in the authorization flow.
         state = createState()
         stateStore.set(state, codeVerifier)
-        res.cookie(`STATE_${state}`, codeVerifier, {httpOnly: true, sameSite: 'lax'})
+        res.cookie(`STATE_${state}`, codeVerifier, { httpOnly: true, sameSite: 'lax' })
 
         // Build up the authorization URL piece by piece, starting with the authorization endpoint.
         const authBaseURL = `${config.api.environment}/a/consumer/api/v0/oidc/auth`
@@ -76,13 +78,13 @@ app.get('/dynamic', async (req, res) => {
         const scopesParameterEncoded = `?scope=${encodeURIComponent('openid profile https://api.banno.com/consumer/auth/accounts.readonly')}`
 
         const responseTypeParameter = `&response_type=code`
-       
+
         const clientIdParameter = `&client_id=${config.api.client_id}`
-       
+
         const redirectUriParameterEncoded = `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
-       
+
         const stateParameter = `&state=${state}`
-        
+
         // Adapted from https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
         //
         // Here we request a Publicly Available Claim.
@@ -158,9 +160,9 @@ app.get('/dynamic', async (req, res) => {
 
     const user_accounts_string = await user_accounts_info.text()
     const accounts_data = JSON.parse(user_accounts_string)
-    
+
     res.render('pages/dynamic', {
-        given_name: id_token.given_name, 
+        given_name: id_token.given_name,
         accounts_count: accounts_data.accounts.length
     })
 })
