@@ -118,6 +118,7 @@ app.get('/dynamic', async (req, res) => {
         const codeChallengeMethodParameter = `&code_challenge_method=S256`
 
         let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}${claimsParameter}`
+        console.log(`Authorization URL: ${authorizationURL}`)
 
         // Redirect to begin the authorization flow.
         res.redirect(authorizationURL)
