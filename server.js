@@ -34,6 +34,12 @@ app.set('view engine', 'ejs')
 
 app.use('/public/', express.static('./public'));
 
+// If you click on the URL in the log, "App running at http://localhost:8080", that will open the URL in your web browser.
+// In this case, we'll redirect you from the '/' route to the '/static' route to render the static HTML.
+app.get('/', (req, res) => {
+    res.redirect('/static')
+})
+
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
     res.render('pages/static')
