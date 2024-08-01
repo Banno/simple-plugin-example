@@ -143,6 +143,9 @@ app.get('/dynamic', async (req, res) => {
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
 
+    console.log('Identity Token:')
+    console.log(id_token)
+
     // Here we log the Publicly Available Claim that we requested.
     //
     // If we had instead requested a Restricted Claim, the administrator at the financial institution
