@@ -34,6 +34,12 @@ app.set('view engine', 'ejs')
 
 app.use('/public/', express.static('./public'));
 
+// If you click on the URL in the log, "App running at http://localhost:8080", that will open the URL in your web browser.
+// In this case, we'll redirect you from the '/' route to the '/static' route to render the static HTML.
+app.get('/', (req, res) => {
+    res.redirect('/static')
+})
+
 // First plugin, renders static HTML
 app.get('/static', (req, res) => {
     res.render('pages/static')
@@ -94,6 +100,10 @@ app.get('/dynamic', async (req, res) => {
         // in order to actually receive data for that claim.
         const claims = {
             'https://api.banno.com/consumer/claim/institution_id': null,
+            // If you uncomment this line for the 'Unique Customer Identifer' Restricted claim,
+            // the administrator at the financial institution would also need to enable that restricted claim
+            // for the External Application used by this example in order to actually receive data for that claim.
+            //'https://api.banno.com/consumer/claim/customer_identifier': null,
         };
 
         const claimsToRequest = {
@@ -112,6 +122,7 @@ app.get('/dynamic', async (req, res) => {
         const codeChallengeMethodParameter = `&code_challenge_method=S256`
 
         let authorizationURL = `${authBaseURL}${scopesParameterEncoded}${responseTypeParameter}${clientIdParameter}${redirectUriParameterEncoded}${stateParameter}${codeChallengeParameter}${codeChallengeMethodParameter}${claimsParameter}`
+        console.log(`Authorization URL: ${authorizationURL}`)
 
         // Redirect to begin the authorization flow.
         res.redirect(authorizationURL)
@@ -136,6 +147,9 @@ app.get('/dynamic', async (req, res) => {
     const access_token = my_tokens.access_token
     const id_token = my_tokens.id_token
 
+    console.log('Identity Token:')
+    console.log(id_token)
+
     // Here we log the Publicly Available Claim that we requested.
     //
     // If we had instead requested a Restricted Claim, the administrator at the financial institution
@@ -144,6 +158,11 @@ app.get('/dynamic', async (req, res) => {
     //
     // See https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
     console.log(`Unique identifier for the institution: ${id_token['https://api.banno.com/consumer/claim/institution_id']}`)
+
+    // If you uncomment this line for the 'Unique Customer Identifer' Restricted claim,
+    // the administrator at the financial institution would also need to enable that restricted claim
+    // for the External Application used by this example in order to actually receive data for that claim.
+    //console.log(`Unique customer identifier (restricted claim): ${id_token['https://api.banno.com/consumer/claim/customer_identifier']}`)
 
     // We can access some user information from the decoded Identity Token.
     // The "sub" OpenID Connect claim is the unique subject identifier for the user.
