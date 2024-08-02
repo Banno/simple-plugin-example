@@ -100,6 +100,10 @@ app.get('/dynamic', async (req, res) => {
         // in order to actually receive data for that claim.
         const claims = {
             'https://api.banno.com/consumer/claim/institution_id': null,
+            // If you uncomment this line for the 'Unique Customer Identifer' Restricted claim,
+            // the administrator at the financial institution would also need to enable that restricted claim
+            // for the External Application used by this example in order to actually receive data for that claim.
+            //'https://api.banno.com/consumer/claim/customer_identifier': null,
         };
 
         const claimsToRequest = {
@@ -154,6 +158,11 @@ app.get('/dynamic', async (req, res) => {
     //
     // See https://jackhenry.dev/open-api-docs/authentication-framework/overview/OpenIDConnectOAuth/.
     console.log(`Unique identifier for the institution: ${id_token['https://api.banno.com/consumer/claim/institution_id']}`)
+
+    // If you uncomment this line for the 'Unique Customer Identifer' Restricted claim,
+    // the administrator at the financial institution would also need to enable that restricted claim
+    // for the External Application used by this example in order to actually receive data for that claim.
+    //console.log(`Unique customer identifier (restricted claim): ${id_token['https://api.banno.com/consumer/claim/customer_identifier']}`)
 
     // We can access some user information from the decoded Identity Token.
     // The "sub" OpenID Connect claim is the unique subject identifier for the user.
