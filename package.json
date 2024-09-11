@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "jwt-decode": "^3.1.1",
     "node-fetch": "^2.6.7"
   }
