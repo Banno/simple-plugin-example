@@ -20,6 +20,10 @@
 // To learn more about extending Banno's user interface and how to get started with the Plugin Framework,
 // see more details at https://jackhenry.dev/open-api-docs/plugins/getting-started/
 
+// This example project doesn't include any storage mechanism (e.g. a database) for managing state.
+// Therefore, we use this as our 'storage' for the purposes of this example.
+// This method is NOT recommended for use in production systems.
+
 const express = require('express')
 const app = express()
 

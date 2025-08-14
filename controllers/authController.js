@@ -28,6 +28,11 @@ const initAuth = async (req, res) => {
 
     const claims = {
         'https://api.banno.com/consumer/claim/institution_id': null,
+        // If you uncomment this line for the 'Unique Customer Identifer' Restricted claim,
+        // the administrator at the financial institution would also need to enable that restricted claim
+        // for the External Application used by this example in order to actually receive data for that claim.
+        //'https://api.banno.com/consumer/claim/customer_identifier': null,
+
     }
 
     const claimsToRequest = {
@@ -46,7 +51,7 @@ const initAuth = async (req, res) => {
     res.redirect(authorizationURL)
 }
 
-const handleCallback = async (req, res) => {
+const handleAuthCallback = async (req, res) => {
     const redirectUri = `http://localhost:${config.app_port}/auth/callback`
     if (!req.query.code || !req.query.state) {
         return res.status(400).send('Auth error: Missing code or state')
@@ -88,5 +93,5 @@ const handleCallback = async (req, res) => {
 
 module.exports = {
     initAuth,
-    handleCallback
+    handleAuthCallback
 }

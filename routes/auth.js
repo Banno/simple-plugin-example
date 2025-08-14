@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const { initAuth, handleCallback } = require('../controllers/authController')
+const { initAuth, handleAuthCallback } = require('../controllers/authController')
 
 router.get('/', initAuth)
-router.get('/callback', handleCallback)
+router.get('/callback', handleAuthCallback)
 
 module.exports = router
