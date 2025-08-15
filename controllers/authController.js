@@ -4,6 +4,10 @@ const exchangeAuthCode = require('../utils/tokenService')
 const { createPkcePair } = require('../utils/pkce')
 const { createState } = require('../utils/state')
 
+// This example project doesn't include any storage mechanism (e.g. a database) for managing state.
+// Therefore, we use this as our 'storage' for the purposes of this example.
+// This method is NOT recommended for use in production systems.
+
 const stateStore = new Map()
 
 const initAuth = async (req, res) => {
