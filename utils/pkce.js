@@ -19,7 +19,14 @@ function createCodeChallenge(codeVerifier) {
         .replace(/\//g, '_')
 }
 
+function createPkcePair() {
+    const codeVerifier = createCodeVerifier()
+    const codeChallenge = createCodeChallenge(codeVerifier)
+    return { codeVerifier, codeChallenge }
+}
+
 module.exports = {
     createCodeVerifier,
-    createCodeChallenge
+    createCodeChallenge,
+    createPkcePair
 }
